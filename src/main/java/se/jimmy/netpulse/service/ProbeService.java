@@ -8,6 +8,8 @@ import se.jimmy.netpulse.model.NetworkMetric;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -25,8 +27,9 @@ public class ProbeService {
         Instant start = Instant.now();
         boolean reachable = false;
 
-        try {
-            reachable = InetAddress.getByName(host).isReachable(timeoutMs);
+        try (Socket socket = new Socket()){
+            socket.connect(new InetSocketAddress(host, 443), timeoutMs);
+            reachable = true;
         } catch (IOException e) {
             log.warn("Failed to reach {}: {}", host, e.getMessage());
         }

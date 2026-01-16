@@ -15,7 +15,7 @@ public record NetPulseProperties(
     ) {}
 
     public record Thresholds(
-            long warningsMs,
+            long warningMs,
             long criticalMs
     ) {}
 

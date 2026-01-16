@@ -20,7 +20,7 @@ public class AnalysisService {
         }
 
         long latency = metric.latencyMs();
-        long warningThreshold = properties.monitor().thresholds().warningsMs();
+        long warningThreshold = properties.monitor().thresholds().warningMs();
         long criticalThreshold = properties.monitor().thresholds().criticalMs();
 
         if (latency >= criticalThreshold) {
