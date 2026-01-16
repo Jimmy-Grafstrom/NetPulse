@@ -29,7 +29,7 @@ public class AnalysisService {
         }
 
         if (latency >= warningThreshold) {
-            log.error("WARNING: Latency {}ms exceeds threshold {}ms", latency, warningThreshold);
+            log.warn("WARNING: Latency {}ms exceeds threshold {}ms", latency, warningThreshold);
             return AnalysisStatus.WARNING;
         }
 
