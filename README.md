@@ -31,7 +31,21 @@ It is ideal for monitoring critical SaaS dependencies (e.g., Google API, AWS end
 
 ## 🏁 Quick Start
 
-### Using Docker Compose (Recommended)
+### Using Pre-built Image (Fastest)
+
+No need to clone the repository or build the code. If you have Docker installed, just run:
+
+```bash
+docker run -d \
+  --name netpulse \
+  -p 8080:8080 \
+  -v $(pwd)/logs:/app/logs \
+  --restart unless-stopped \
+  ghcr.io/jimmy-grafstrom/netpulse:latest
+```
+*Open your browser at `http://localhost:8080`.*
+
+### Using Docker Compose (From Source)
 
 1.  Build the image:
     ```bash
