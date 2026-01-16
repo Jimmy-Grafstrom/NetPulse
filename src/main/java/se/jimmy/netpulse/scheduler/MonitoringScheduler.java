@@ -6,6 +6,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import se.jimmy.netpulse.model.AnalysisStatus;
 import se.jimmy.netpulse.model.NetworkMetric;
+import se.jimmy.netpulse.repository.MetricsRepository;
 import se.jimmy.netpulse.service.AnalysisService;
 import se.jimmy.netpulse.service.FileLoggingService;
 import se.jimmy.netpulse.service.ProbeService;
@@ -18,6 +19,7 @@ public class MonitoringScheduler {
     private final ProbeService probeService;
     private final AnalysisService analysisService;
     private final FileLoggingService loggingService;
+    private final MetricsRepository metricsRepository;
 
     @Scheduled(fixedDelayString = "${netpulse.monitor.interval-ms}")
     public void runMonitoringCycle() {
@@ -26,6 +28,7 @@ public class MonitoringScheduler {
         AnalysisStatus status = analysisService.analyze(metric);
 
         loggingService.logMetric(metric, status);
+        metricsRepository.add(metric);
 
         log.info("Probe: {} | Latency: {}ms | Status: {}",
                 metric.targetHost(), metric.latencyMs(), status);
