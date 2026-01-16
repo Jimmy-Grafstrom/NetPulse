@@ -1,0 +1,9 @@
+services:
+  netpulse:
+    image: netpulse:latest
+    container_name: netpulse
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
