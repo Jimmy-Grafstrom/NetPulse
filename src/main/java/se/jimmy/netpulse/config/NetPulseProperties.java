@@ -20,6 +20,6 @@ public record NetPulseProperties(
     ) {}
 
     public record Logging(
-            String cvsPath
+            String csvPath
     ) {}
 }

@@ -24,7 +24,7 @@ public class FileLoggingService {
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public void logMetric(NetworkMetric metric, AnalysisStatus status) {
-        String filePath = properties.logging().cvsPath();
+        String filePath = properties.logging().csvPath();
         Path path = Paths.get(filePath);
 
         try {
