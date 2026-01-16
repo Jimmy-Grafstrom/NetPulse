@@ -1,5 +1,5 @@
 FROM maven:3.9-eclipse-temurin-25 AS builder
-LABEL authors="jgrafstrom"
+LABEL authors="Jimmy-Grafstrom"
 WORKDIR /app
 COPY . .
 RUN mvn clean package -DskipTests
