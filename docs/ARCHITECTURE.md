@@ -35,3 +35,11 @@ This document serves as a log of significant architectural decisions made during
 *   **Consequence:** 
     *   Decouples the UI from the execution environment.
     *   Allows the application to run on a headless server (NAS/VPS) while being viewed on any device (Mobile/Laptop).
+
+## ADR 5: Log Data Accessibility (2026-01-17)
+*   **Status:** Accepted
+*   **Context:** Users running NetPulse in Docker encountered file permission issues when mapping log directories to their local host. Accessing the raw CSV file required manual terminal commands or SSH access.
+*   **Decision:** Implement a **Log Download Endpoint** (`/api/logs/download`) and a UI button.
+*   **Consequence:** 
+    *   **Pros:** Eliminates the need for complex Docker volume permission management (`chmod/chown`) for standard users. Makes historical data accessible via the browser regardless of the hosting environment.
+    *   **Cons:** Increases the API surface of the backend slightly.
