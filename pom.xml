@@ -10,7 +10,7 @@
     </parent>
     <groupId>se.jimmy</groupId>
     <artifactId>NetPulse</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <name>NetPulse</name>
     <description>NetPulse</description>
     <url/>
