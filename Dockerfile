@@ -8,6 +8,10 @@ FROM eclipse-temurin:25-jre-alpine
 WORKDIR /app
 
 RUN addgroup -S netpulse && adduser -S netpulse -G netpulse
+
+# Create logs directory and set ownership
+RUN mkdir logs && chown -R netpulse:netpulse /app
+
 USER netpulse:netpulse
 
 COPY --from=builder /app/target/*.jar app.jar

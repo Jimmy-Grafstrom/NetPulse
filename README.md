@@ -8,8 +8,9 @@
 
 *   **Real-time Latency Tracking:** Visualized via Chart.js with dynamic color coding.
 *   **TCP-based Probing:** Measures application-layer latency via port 443 (HTTPS).
+*   **Log Download:** Instant access to historical data via a "Download CSV" button in the UI.
 *   **Persistent Logging:** Automatically logs all metrics to a portable CSV format.
-*   **Docker Ready:** Multi-stage build for minimal footprint and easy deployment.
+*   **Docker Ready:** Multi-stage build with optimized permissions for secure and easy deployment.
 *   **NOC Dashboard:** Dark-themed web interface with KPIs (Avg/Max Latency, Uptime %).
 
 ## 🎯 Use Case: Application Availability
@@ -21,80 +22,60 @@ By opening a real TCP socket to port 443 (HTTPS), it simulates a user actually t
 *   Web server processes crashing (while the OS is still up).
 *   Network congestion affecting handshake times.
 
-It is ideal for monitoring critical SaaS dependencies (e.g., Google API, AWS endpoints) or internal microservices from a containerized environment where root privileges are restricted.
-
-## 🛠 Tech Stack
-
-*   **Backend:** Java 25 (LTS), Spring Boot 4.0.1.
-*   **Frontend:** HTML5, Bootstrap 5, Chart.js, Vanilla JS.
-*   **Infrastructure:** Docker, Docker Compose.
-
 ## 🏁 Quick Start
 
-### Using Pre-built Image (Fastest)
+### Using Docker (Fastest)
 
-No need to clone the repository or build the code. If you have Docker installed, just run:
+No cloning required. Just run this command and open your browser at `http://localhost:8080`:
 
 ```bash
 docker run -d \
   --name netpulse \
   -p 8080:8080 \
-  -v $(pwd)/logs:/app/logs \
   --restart unless-stopped \
   ghcr.io/jimmy-grafstrom/netpulse:latest
 ```
-*Open your browser at `http://localhost:8080`.*
 
-### Using Docker Compose (From Source)
+### Advanced: Persistent Local Logs
 
-1.  Build the image:
-    ```bash
-    docker build -t netpulse:latest .
-    ```
-2.  Start the service:
-    ```bash
-    docker compose up -d
-    ```
-3.  Open your browser at `http://localhost:8080`.
+If you want the CSV logs to be saved directly on your host machine (outside the container), use a volume:
 
-### Using Docker Run
-
-If you don't have Docker Compose installed:
 ```bash
+# Create directory and give write access (Linux)
+mkdir -p logs && chmod 777 logs
+
 docker run -d \
   --name netpulse \
   -p 8080:8080 \
-  -v $(pwd)/logs:/app/logs \
-  --restart unless-stopped \
-  netpulse:latest
+  -v $(pwd)/logs:/app/logs:z \
+  ghcr.io/jimmy-grafstrom/netpulse:latest
 ```
 
 ## ⚙️ Configuration
 
-You can customize the monitoring behavior in `src/main/resources/application.yml`:
+The easiest way to configure NetPulse is via environment variables:
 
-```yaml
-netpulse:
-  monitor:
-    target-host: google.com      # Host to monitor
-    interval-ms: 5000            # Delay between probes
-    thresholds:
-      warning-ms: 100            # Yellow status threshold
-      critical-ms: 500           # Red status/Timeout threshold
-  logging:
-    csv-path: logs/network-metrics.csv
+| Property | Env Variable | Default |
+| :--- | :--- | :--- |
+| Target Host | `NETPULSE_MONITOR_TARGET_HOST` | `google.com` |
+| Interval (ms) | `NETPULSE_MONITOR_INTERVAL_MS` | `5000` |
+| Warning Threshold | `NETPULSE_MONITOR_THRESHOLDS_WARNING_MS` | `100` |
+| Critical Threshold | `NETPULSE_MONITOR_THRESHOLDS_CRITICAL_MS` | `500` |
+
+**Example:**
+```bash
+docker run -d -e NETPULSE_MONITOR_TARGET_HOST=github.com ...
 ```
 
-## 📊 Data Persistence
+## 📊 Data Access
 
-By default, NetPulse persists all measurement data to a CSV file. When running via Docker, this is mapped to your local file system:
-
+NetPulse stores all measurements in a CSV format.
+*   **Web Download:** Use the "Download CSV Log" button at the bottom of the Dashboard.
 *   **Internal Path:** `/app/logs/network-metrics.csv`
-*   **Host Path:** `./logs/network-metrics.csv` (Relative to your project root)
 
 ## 🏗 Architecture
 
-This project follows a strict architectural process recorded in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
+This project follows a strict architectural process (ADR) recorded in [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md).
 
 ---
 *Developed by Jimmy Grafström - 2026*
