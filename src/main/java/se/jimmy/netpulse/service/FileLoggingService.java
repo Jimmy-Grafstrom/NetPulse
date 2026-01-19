@@ -1,5 +1,6 @@
 package se.jimmy.netpulse.service;
 
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,15 @@ public class FileLoggingService {
     private final NetPulseProperties properties;
     private static final String CSV_HEADER = "Timestamp,Target,LatencyMs,Status,Reachable";
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+    @PostConstruct
+    public void init() {
+        try {
+            ensureFilePathExists(Paths.get(properties.logging().csvPath()));
+        } catch (IOException e) {
+            log.error("Could not create log file: {}", e.getMessage());
+        }
+    }
 
     public void logMetric(NetworkMetric metric, AnalysisStatus status) {
         String filePath = properties.logging().csvPath();
