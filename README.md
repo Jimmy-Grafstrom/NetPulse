@@ -36,18 +36,33 @@ docker run -d \
   ghcr.io/jimmy-grafstrom/netpulse:latest
 ```
 
+> **Note:** To ensure you have the latest features, run `docker pull ghcr.io/jimmy-grafstrom/netpulse:latest` to update your local image.
+
 ### Advanced: Persistent Local Logs
 
-If you want the CSV logs to be saved directly on your host machine (outside the container), use a volume:
+If you want the CSV logs to be saved directly on your host machine (outside the container) for long-term persistence, use a volume:
 
+#### Linux / macOS (Bash)
 ```bash
-# Create directory and give write access (Linux)
+# Create directory and give write access
 mkdir -p logs && chmod 777 logs
 
 docker run -d \
   --name netpulse \
   -p 8080:8080 \
   -v $(pwd)/logs:/app/logs:z \
+  ghcr.io/jimmy-grafstrom/netpulse:latest
+```
+
+#### Windows (PowerShell)
+```powershell
+# Create directory
+mkdir logs
+
+docker run -d `
+  --name netpulse `
+  -p 8080:8080 `
+  -v ${PWD}/logs:/app/logs `
   ghcr.io/jimmy-grafstrom/netpulse:latest
 ```
 
@@ -69,9 +84,12 @@ docker run -d -e NETPULSE_MONITOR_TARGET_HOST=github.com ...
 
 ## 📊 Data Access
 
-NetPulse stores all measurements in a CSV format.
-*   **Web Download:** Use the "Download CSV Log" button at the bottom of the Dashboard.
-*   **Internal Path:** `/app/logs/network-metrics.csv`
+NetPulse provides two ways to access your monitoring data:
+
+*   **Live Log (Persistence):** If you use the Volume method, the `network-metrics.csv` file on your host machine is updated in real-time. This is ideal for long-term archiving or external analysis.
+*   **Web Download (Snapshot):** Use the **"Download CSV Log"** button on the Dashboard for an instant snapshot copy of the logs. Perfect for quick sharing or manual inspection without server access.
+
+**Internal Path:** `/app/logs/network-metrics.csv`
 
 ## 🏗 Architecture
 
