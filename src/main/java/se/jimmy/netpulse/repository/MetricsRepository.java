@@ -1,24 +1,23 @@
 package se.jimmy.netpulse.repository;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import se.jimmy.netpulse.model.NetworkMetric;
 
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ConcurrentLinkedDeque;
 
-@Component
+@Repository
 public class MetricsRepository {
 
+    private final Deque<NetworkMetric> history = new ConcurrentLinkedDeque<>();
     private static final int MAX_HISTORY_SIZE = 100;
 
-    private final Queue<NetworkMetric> history = new ConcurrentLinkedQueue<>();
-
     public void add(NetworkMetric metric) {
-        history.add(metric);
+        history.addLast(metric);
         while (history.size() > MAX_HISTORY_SIZE) {
-            history.poll();
+            history.pollFirst();
         }
     }
 
@@ -27,6 +26,6 @@ public class MetricsRepository {
     }
 
     public NetworkMetric getLatest() {
-        return history.stream().reduce((first, second) -> second).orElse(null);
+        return history.peekLast();
     }
 }
